@@ -10,3 +10,5 @@ pathlib
 pandas
 xkcd
 decorator==5.0.9
+chatify @ git+https://github.com/ContextLab/chatify
+davos
