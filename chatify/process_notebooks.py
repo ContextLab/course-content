@@ -10,7 +10,7 @@ mod_repo = 'ContextLab'
 
 
 def get_tutorial_notebooks(basedir):
-    return lsdir(os.path.join(basedir, 'tutorials', 'W*D*_*', 'W*D*_Tutorial*.ipynb'))
+    return lsdir(os.path.join(basedir, 'tutorials', '*', '*Tutorial*.ipynb'))
 
 
 def chatified(fname):
