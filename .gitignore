@@ -3,3 +3,7 @@
 .idea
 _build
 _toc.yml
+tutorials/*/.DS_Store
+chatify/config.yaml
+tutorials/.DS_Store
+.DS_Store
