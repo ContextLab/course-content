@@ -4,6 +4,9 @@ from glob import glob as lsdir
 import nbformat as nbf
 from chatify import Chatify
 from tqdm import tqdm
+import numpy as np
+
+import pickle
 
 source_repo = 'NeuromatchAcademy'
 mod_repo = 'ContextLab'
@@ -64,24 +67,57 @@ def inject_chatify(fname):
     )
 
 
-def cache_responses(fname, tutor=None, prompts=None):
-    if tutor is None:
-        tutor = Chatify()
+# def cache_responses(fname, tutor=None, prompts=None):
+#     if tutor is None:
+#         tutor = Chatify()
     
-    if prompts is None:
-        prompts = tutor._read_prompt_dir()['tutor']
+#     if prompts is None:
+#         prompts = tutor._read_prompt_dir()['tutor']
     
+#     notebook = nbf.read(fname, nbf.NO_CONVERT)
+#     for cell in notebook['cells']:
+#         if cell['cell_type'] == 'code':
+#             for _, prompt in prompts.items():
+#                 tutor._cache(cell['source'], prompt)
+
+def compress_code(text):
+    return '\n'.join([line.strip() for line in text.split('\n') if len(line.strip()) > 0])
+
+
+def get_code_cells(fname):
     notebook = nbf.read(fname, nbf.NO_CONVERT)
-    for cell in notebook['cells']:
-        if cell['cell_type'] == 'code':
-            for _, prompt in prompts.items():
-                tutor._cache(cell['source'], prompt)
+    return [compress_code(cell['source']) for cell in notebook['cells'] if cell['cell_type'] == 'code']
 
 
 tutorials = get_tutorial_notebooks(os.getcwd())
 tutor = Chatify()
 prompts = tutor._read_prompt_dir()['tutor']
+code_cells = []
 
 for notebook in tqdm(tutorials):
     inject_chatify(notebook)
-    cache_responses(notebook, tutor=tutor, prompts=prompts)
+    code_cells.extend(get_code_cells(notebook))
+
+savefile = os.path.join(os.getcwd(), 'chatify', 'cache.pkl')
+if os.path.exists(savefile):
+    with open(savefile, 'rb') as f:
+        cache = pickle.load(f)
+else:
+    cache = {}
+
+tmpfile = os.path.join(os.getcwd(), 'chatify', 'tmp.pkl')
+for cell in tqdm(np.unique(code_cells)):
+    if cell not in cache:
+        cache[cell] = {}
+    
+    for name, content in prompts.items():
+        if name not in cache[cell]:
+            cache[cell][name] = tutor._cache(cell, content)
+
+            with open(tmpfile, 'wb') as f:
+                pickle.dump(cache, f)
+
+with open(savefile, 'wb') as f:
+    pickle.dump(cache, f)
+
+os.remove(tmpfile)

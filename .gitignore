@@ -8,3 +8,4 @@ chatify/config.yaml
 tutorials/.DS_Store
 .DS_Store
 ci/
+config.yaml
