@@ -40,23 +40,30 @@ def inject_chatify(fname):
     background_cell = nbf.v4.new_markdown_cell(source=get_text('background.md'), metadata={'execution': {}})
     del background_cell['id']
 
-    # insert davos cell
+    # create davos cell
     davos_cell = nbf.v4.new_code_cell(source=get_text('install_davos.py'), metadata={'cellView': 'form', 'execution': {}})
     del davos_cell['id']
 
-    # insert chatify cell
+    # create chatify cell
     chatify_cell = nbf.v4.new_code_cell(source=get_text('install_and_load_chatify.py'), metadata={'cellView': 'form', 'execution': {}})
     del chatify_cell['id']
 
+    idx = 0
+    for cell in new_notebook['cells']:
+        idx += 1
+        if cell['cell_type'] == 'markdown':
+            if '# Setup' in cell['source']:
+                break
+
     if chatified(fname):
         new_notebook.cells[0] = header_cell
-        new_notebook.cells[2] = background_cell
-        new_notebook.cells[3] = davos_cell
-        new_notebook.cells[4] = chatify_cell
+        new_notebook.cells[idx] = background_cell
+        new_notebook.cells[idx + 1] = davos_cell
+        new_notebook.cells[idx + 2] = chatify_cell
     else:
-        new_notebook.cells.insert(2, background_cell)
-        new_notebook.cells.insert(3, davos_cell)
-        new_notebook.cells.insert(4, chatify_cell)
+        new_notebook.cells.insert(idx, background_cell)
+        new_notebook.cells.insert(idx + 1, davos_cell)
+        new_notebook.cells.insert(idx + 2, chatify_cell)
 
     # Write the file
     nbf.write(
