@@ -90,6 +90,6 @@ jobs:
       - name: Publish to gh-pages
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           force: true
