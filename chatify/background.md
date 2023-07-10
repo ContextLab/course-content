@@ -1,4 +1,4 @@
-### ⚠ Experimental LLM-enhanced tutorial ⚠
+**⚠ Experimental LLM-enhanced tutorial ⚠**
 
 This notebook includes Neuromatch's experimental [Chatify](https://github.com/ContextLab/chatify) 🤖 functionality. The Chatify notebook extension adds support for a large language model-based "coding tutor" to the materials. The tutor provides automatically generated text to help explain any code cell in this notebook.
 
