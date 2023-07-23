@@ -17,7 +17,7 @@ from gptcache.similarity_evaluation.exact_match import ExactMatchEvaluation
 
 source_repo = 'NeuromatchAcademy'
 mod_repo = 'ContextLab'
-CACHE = True
+CACHE = False
 
 
 def get_tutorial_notebooks(basedir):
